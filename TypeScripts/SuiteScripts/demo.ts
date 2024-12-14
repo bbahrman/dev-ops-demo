@@ -4,11 +4,10 @@
  * @NScriptType UserEventScript
  */
 
-
 import type {EntryPoints} from 'N/types';
 import query = require('N/query');
+import runtime = require('N/runtime');
 import log = require('N/log');
-
 
 export const beforeLoad: EntryPoints.UserEvent.beforeLoad = (beforeLoadContext) => {
   const soLookup: ISQLSalesOrder[] = query.runSuiteQL({
@@ -17,6 +16,12 @@ export const beforeLoad: EntryPoints.UserEvent.beforeLoad = (beforeLoadContext) 
 
   const firstSO = soLookup[0].id;
   log.debug({ title: 'beforeLoad', details: firstSO });
+}
+
+export const beforeSubmit: EntryPoints.UserEvent.beforeSubmit = (context) => {
+  if (runtime.ContextType.WEBSERVICES === runtime.executionContext) {
+    context.newRecord.setValue({ fieldId: 'custbody_integrated', value: true });
+  }
 }
 
 interface ISQLSalesOrder {
