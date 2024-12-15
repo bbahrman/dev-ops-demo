@@ -24,8 +24,12 @@ define(["require", "exports", "N/query", "N/runtime", "N/log"], function (requir
         }
         const sublistId = "item";
         const lineCount = rec.getLineCount({ sublistId });
+        const today = new Date();
         for (let line = 0; line < lineCount; line++) {
             const value = rec.getSublistValue({ sublistId, fieldId: "quantity", line });
+            if (!rec.getSublistValue({ sublistId, fieldId: "custcol_date_saved", line })) {
+                rec.setSublistValue({ sublistId, fieldId: "custcol_date_saved", line, value: today });
+            }
             rec.setSublistValue({ sublistId, fieldId: "custcol_original_quantity", line, value });
         }
     };
